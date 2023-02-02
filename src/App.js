@@ -1,9 +1,8 @@
-import Hookarray from "./components/Hookarray";
-
+import ToggleMouse from "./components/ToggleMouse";
 function App() {
   return (
     <div>
-      <Hookarray />
+      <ToggleMouse />
     </div>
   );
 }

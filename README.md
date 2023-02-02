@@ -1,116 +1,131 @@
-# useState Hook
-### Rules of Hook
-- Only call Hooks at the top level. Dont call Hooks inside loops, conditions, or nested functions
-- Only call hooks from React functions. Call them from within React functional components and not just regular javascript function.
+# useEffect Hook
+### Introduction
+- The effect Hook lets you perform side effects in functional component
+- It is a close replacement for componentDidMount, componentDidUpdate and componenWillUnmount 
 
-### Previous State
-We will make the use case of Previous state with useState hook:
+### useEffect after render
 ```
-import { useState } from 'react'
-
-function Hookcounter() {
+export default function counterEffect() {
 
     const [count, setCount] = useState(0)
 
-    const addFive = () => {
-        for (let i = 0; i < 5; i++) {
-            setCount(count + 1)
+    useEffect(() => {
+        document.title = `clicked ${count} times`
+    })
+
+    return (
+        <div>
+            <button onClick={() => setCount(prevCount => prevCount + 1)}>Clicked {count} times</button>
+        </div>
+    )
+}
+```
+When we specify useEffect, we are basically requesting react to execute the function that is pass as a argument every time component render. <strong>useEffect runs every render of the component. the useEffect run both after the first render and after every update for default setting</strong>.
+
+### Conditionally Run Effects
+In some cases, applying the effect after every render might create a performance problem. So we need the way to conditionally run an effect from a functional component.
+```
+ const [count, setCount] = useState(0)
+    const [name, setName] = useState('')
+
+    useEffect(() => {
+        document.title = `clicked ${count} times`
+        console.log('updating document title')
+    })
+
+    return (
+        <div>
+            <input value={name} onChange={(e) => setName(e.target.value)} />
+            <button onClick={() => setCount(prevCount => prevCount + 1)}>Clicked {count} times</button>
+        </div>
+    )
+```
+In above code, what we really want is to run the effect hook when the count state is change, but above code not doing the exact same way. the above code keep run the effect hook even we updating the other state e.g name state.<br/><br/>
+To make the effect hook only run if the count state is update, we can implement the conditionally run effect:
+```
+    ...
+    ...
+      useEffect(() => {
+        document.title = `clicked ${count} times`
+        console.log('updating document title')
+    }, [count])
+    ...
+    ...
+```
+### Run Effects Only Once
+```
+ const [x, setX] = useState(0)
+    const [y, setY] = useState(0)
+
+    useEffect(() => {
+        console.log('useEffect called!')
+        window.addEventListener('mousemove', (e) => {
+            setX(e.clientX)
+            setY(e.clientY)
+        })
+    })
+
+    return (
+        <div>
+            <h1>Coordinates: X - {x} Y - {y} </h1>
+        </div>
+    )
+```
+Above scenario tells that we want to track the mouse move coordinate when user clicking it, by using the event listener. But the performance of this code was bad, because it will always running the effect hook every time the x and y state was updated causing re-rendering. What we really want to do is running the event listener once after component mount. then when the state has updated, it wont called the effect hook again. So the code will be:
+```
+    ...
+    ...
+    useEffect(() => {
+        console.log('useEffect called!')
+        window.addEventListener('mousemove', (e) => {
+            setX(e.clientX)
+            setY(e.clientY)
+        })
+    }, [])
+    ...
+    ...
+```
+### useEffect Cleanup
+This cleanup is similiar with the old school React class component named componentWillUnmount, where it allows us to tidy up our code before our component unmounts. Cleanup function helps developers clean effects that prevent unwanted behaviors and optimizes application performance.<br/><br/>
+For the example:
+```
+  function ToggleMouse() {
+    const [toggle, setToggle] = useState(false)
+
+    return (
+        <div>
+            <button onClick={() => setToggle(!toggle)}>{toggle ? 'actived' : 'disbaled'}</button>
+            {toggle && <CounterEffect />}
+        </div >
+    )
+}
+```
+We created new Component named ToggleMouse, where we have one button that can make the mouse event component rendered(previous case) if the toggle state was true. after the mouse event component rendering, the effect hook will running and activated the event listener, but when this mouse event component unmounted(clicking the toggle button once again, will cause the toggle state become false and removing the mouse event component) the event listener still running in the background (will cause memory leak, if the code was consuming much data). To prevent this, we use the cleanup:
+```
+export default function CounterEffect() {
+    const [x, setX] = useState(0)
+    const [y, setY] = useState(0)
+
+    const handleMouseEvent = (e) => {
+        console.log('Mouse Event')
+        setX(e.clientX)
+        setY(e.clientY)
+    }
+
+    useEffect(() => {
+        console.log('useEffect called!')
+        window.addEventListener('mousemove', handleMouseEvent)
+        return () => {
+            console.log('Component Unmounted!')
+            window.removeEventListener('mousemove', handleMouseEvent)
         }
-    }
+    }, [])
 
     return (
         <div>
-            <h1>Count: {count}</h1>
-            <button onClick={() => setCount(count + 1)}>Increment</button>
-            <button onClick={() => setCount(count - 1)}>Decrement</button>
-            <button onClick={addFive}>Increment 5 count</button>
-        </div>
-    )
-}
-
-export default Hookcounter
-```
-In this functional Component, we have 3 buttons which is add 1 count state, reducing 1 count state and add 5 count state. If you notice we are not add +5 in the addFive functions, instead we using for loop to add 1 in count state, the reason we are doing this because we want to check what is going on. <strong>What happens is, the count variable only displays 1 when pressing the increment 5 count button</strong>. That is because setCount method is reading a stale valueof the count state variable.<br/>
-To overcome this, we need to use the second form of the setCount function. Instead of passing the value of the new state variable, we passing the function that has access to the old state value:
-```
-    ...
-    ...
-       const addFive = () => {
-        for (let i = 0; i < 5; i++) {
-            setCount((prevCount) => prevCount + 1)
-        }
-    }
-    return (
-        <div>
-            <h1>Count: {count}</h1>
-            <button onClick={() => setCount((prevCount) => prevCount + 1)}>Increment</button>
-            <button onClick={() => setCount((prevCount) => prevCount - 1)}>Decrement</button>
-            <button onClick={addFive}>Increment 5 count</button>
-        </div>
-    )
-```
-### useState With Object
-lets make the use case:
-```
-export default function Hookobject() {
-
-    const [name, setName] = useState({ firstname: '', lastname: '' })
-
-    return (
-        <div>
-            <input value={name.firstname} onChange={(e) => setName({ firstname: e.target.value })}></input>
-            <input value={name.lastname} onChange={(e) => setName({ lastname: e.target.value })}></input>
-            <h2>firstname: {name.firstname}</h2>
-            <h2>lastname: {name.lastname}</h2>
+            <h1>Coordinates: X - {x} Y - {y} </h1>
         </div>
     )
 }
 ```
-in this scenario, when we fill the first input text, we will se the firstname:h2 tag will appear the value of our name.firstname, but when we ara typing on the second input field, the name.firstname value will gone and the
-lastname:h2 tag will appear. This is happened because the useState does not automatically merge and update the object.<br/>
-To overcome this, we will use the spread operator(ES6). this means that the previous property will be copied to the state and added new property to the object itself.
-```
-    ...
-    ...
-    return (
-        <div>
-            <input value={name.firstname} onChange={(e) => setName({ ...name, firstname: e.target.value })}/>
-            <input value={name.lastname} onChange={(e) => setName({ ...name, lastname: e.target.value })}/>
-            <h2>firstname: {name.firstname}</h2>
-            <h2>lastname: {name.lastname}</h2>
-        </div>
-    )
-```
-### useState With Array
-Same like an object value, the useState cannot automatically merge and update while playing with the Array type.
-We need to handle that manually using the spread operator as well:
-```
-export default function Hookarray() {
-
-    const [item, setItem] = useState([])
-
-    const addItem = () => {
-        setItem([...item, {
-            id: 1,
-            value: 'Darmawan'
-        }])
-    }
-
-    return (
-        <div>
-            <button onClick={addItem}>Add object in Array</button>
-            {
-                item.map((item) => (
-                    <p>{item.value}</p>
-                ))
-            }
-        </div>
-    )
-}
-```
-# Summary
-- the useState hook lets you add state to the funcitonal components. In Classes, the state is always an object.
-- With the useState hook, the state doesnt always have to be an object.
-- The useState hook returns an array with 2 elements. 1st is current value and the 2nd is the setter function.
-- New state value depends on the previous state value? You can pass a function to the setter function.
-- When dealing with an objects or arrays, always make sure to spread your state variable.
+The clean up can cancel the subcriptions (when the component fetch some some data but the user already unmounted the component before our promise resolved.) and removing the event listener when the component unmounted.
