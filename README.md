@@ -129,3 +129,29 @@ export default function CounterEffect() {
 }
 ```
 The clean up can cancel the subcriptions (when the component fetch some some data but the user already unmounted the component before our promise resolved.) and removing the event listener when the component unmounted.
+
+### Fetching data with useEffect
+```
+function FetchData() {
+
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+        axios.get('https://jsonplaceholder.typicode.com/todos')
+            .then(res => {
+                setData(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
+
+    return (
+        <div>
+            {data.map(item => (
+                <h1>{item.title}</h1>
+            ))}
+        </div>
+    )
+}
+```

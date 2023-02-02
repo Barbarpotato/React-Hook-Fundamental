@@ -1,8 +1,9 @@
-import ToggleMouse from "./components/ToggleMouse";
+import FetchData from "./components/FetchData";
+
 function App() {
   return (
     <div>
-      <ToggleMouse />
+      <FetchData />
     </div>
   );
 }
