@@ -6,3 +6,6 @@ The React useState Hook allows us to track state in a function component. State 
 
 ### useEffect Hook
 useEffect is a hook for encapsulating code that has 'side effects,' and is like a combination of componentDidMount , componentDidUpdate , and componentWillUnmount . Previously, functional components didn't have access to the component life cycle, but with useEffect you can tap into it. Access the <a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useEffect">useEffect</a> Branch to learn more.
+
+### useContext Hook
+useContext hook is used to create common data that can be accessed throughout the component hierarchy without passing the props down manually to each level. Access the <a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useContext">useContext</a> Branch to learn more.
