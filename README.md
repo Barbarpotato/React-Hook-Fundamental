@@ -119,3 +119,58 @@ function Counter() {
     );
 }
 ```
+
+### Fetching Data with useReducer
+The advantage of using useReducer for fetching API data compared to useState is that useReducer provides a more centralized and structured way to manage complex state changes, making it easier to understand the flow of data in your application. useReducer also makes it easier to update state based on the previous state, which is often necessary when dealing with asynchronous data. Furthermore, useReducer can handle multiple state updates in a single render cycle, making it a more efficient way to manage state updates compared to useState.<br/><br/>
+First make the reducer function and the initial state:
+```
+const initialData = {
+    loading: true,
+    data: {},
+    error: ''
+}
+
+const reducer = (_state, action) => {
+    switch (action.type) {
+        case 'success':
+            return { loading: false, data: action.payload, error: '' }
+        case 'failed':
+            return { loading: false, data: {}, error: action.payload }
+        default:
+            return initialData
+    }
+}
+```
+then using reducer function and initial state in to the useReducer function:
+```
+export default function FetchData() {
+
+    const [state, dispatch] = useReducer(reducer, initialData)
+
+    useEffect(() => {
+        setTimeout(() => {
+            axios.get('https://jsonplaceholder.typicoe.com/todos/1')
+                .then((res) => {
+                    dispatch({ type: 'success', payload: res.data })
+                })
+                .catch((err) => {
+                    dispatch({ type: 'failed', payload: err.message })
+                })
+        }, 1000)
+    }, [])
+
+    if (state.loading) {
+        return (
+            <>Loading...</>
+        )
+    }
+
+    return (
+        <div>
+            <h1>Calling from API</h1>
+            <p>{state.error === '' ? state.data.id : state.error}</p>
+            <p>{state.error === '' ? state.data.title : state.error}</p>
+        </div>
+    )
+}
+```

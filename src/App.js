@@ -1,5 +1,6 @@
 import Counter from "./components/Counter";
 import { useReducer, createContext } from "react";
+import FetchData from "./components/FetchData";
 
 const initialState = {
   count: 1
@@ -33,6 +34,8 @@ function App() {
       <countContext.Provider value={contextValue}>
         <Counter />
       </countContext.Provider>
+
+      <FetchData />
     </div>
   );
 }
