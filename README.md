@@ -9,3 +9,6 @@ useEffect is a hook for encapsulating code that has 'side effects,' and is like 
 
 ### useContext Hook
 useContext hook is used to create common data that can be accessed throughout the component hierarchy without passing the props down manually to each level. Access the <a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useContext">useContext</a> Branch to learn more.
+
+### useReducer Hook
+<a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useReducer">useReducer</a> is a React Hook that provides a way to manage state and perform state transitions in a React function component. It is similar to the redux library in that it allows you to centralize and manage the state of your application in a single location.
