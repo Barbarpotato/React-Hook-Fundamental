@@ -12,3 +12,6 @@ useContext hook is used to create common data that can be accessed throughout th
 
 ### useReducer Hook
 <a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useReducer">useReducer</a> is a React Hook that provides a way to manage state and perform state transitions in a React function component. It is similar to the redux library in that it allows you to centralize and manage the state of your application in a single location.
+
+### useCallback Hook
+<a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useCallback">useCallback</a> is a hook that will return a memoized version of the callback function that only changes if one of the dependencies has changed.
