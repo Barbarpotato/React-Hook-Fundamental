@@ -1,28 +1,34 @@
-import { useState, useCallback } from "react";
-import Button from "./components/Button";
-import State from "./components/State";
-import Title from "./components/Title";
-
+import { useMemo, useState } from "react";
 function App() {
 
-  const [count, setCount] = useState(10)
-  const [salary, setSalary] = useState(5000)
+  const [counterOne, setCounterOne] = useState(0)
+  const [counterTwo, setCounterTwo] = useState(0)
 
-  const handleCount = useCallback(() => {
-    setCount(count + 1)
-  }, [count])
+  const handleCounterOne = () => {
+    setCounterOne((prevState) => prevState + 1)
+  }
 
-  const handleSalary = useCallback(() => {
-    setSalary(salary + 5000)
-  }, [salary])
+  const handleCounterTwo = () => {
+    setCounterTwo((prevState) => prevState + 1)
+  }
+
+  const ExpensiveCalculation = useMemo(() => {
+    console.log("Calculating...");
+    let num = 1
+    for (let i = 0; i < 1000000000; i++) {
+      num += 1;
+    }
+    return num;
+  }, [counterOne])
 
   return (
     <div>
-      <Title />
-      <State state={count} type={'count'} />
-      <Button handleClick={handleCount} type={'count'} />
-      <State state={salary} type={'salary'} />
-      <Button handleClick={handleSalary} type={'salary'} />
+      <div>
+        <button onClick={handleCounterOne}> Counter One - {counterOne} - {ExpensiveCalculation}</button>
+      </div>
+      <div>
+        <button onClick={handleCounterTwo}>counterTwo - {counterTwo}</button>
+      </div>
     </div>
   );
 }
