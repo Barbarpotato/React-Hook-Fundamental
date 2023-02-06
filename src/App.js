@@ -1,41 +1,28 @@
-import Counter from "./components/Counter";
-import { useReducer, createContext } from "react";
-import FetchData from "./components/FetchData";
-
-const initialState = {
-  count: 1
-}
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'increment':
-      return { count: state.count + 1 }
-    case 'decrement':
-      return { count: state.count - 1 }
-    default:
-      return initialState
-  }
-}
-
-export const countContext = createContext()
+import { useState, useCallback } from "react";
+import Button from "./components/Button";
+import State from "./components/State";
+import Title from "./components/Title";
 
 function App() {
 
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [count, setCount] = useState(10)
+  const [salary, setSalary] = useState(5000)
 
-  const contextValue = {
-    stateCount: state.count,
-    dispatchCount: dispatch
-  }
+  const handleCount = useCallback(() => {
+    setCount(count + 1)
+  }, [count])
+
+  const handleSalary = useCallback(() => {
+    setSalary(salary + 5000)
+  }, [salary])
 
   return (
     <div>
-
-      <countContext.Provider value={contextValue}>
-        <Counter />
-      </countContext.Provider>
-
-      <FetchData />
+      <Title />
+      <State state={count} type={'count'} />
+      <Button handleClick={handleCount} type={'count'} />
+      <State state={salary} type={'salary'} />
+      <Button handleClick={handleSalary} type={'salary'} />
     </div>
   );
 }
