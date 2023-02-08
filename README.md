@@ -18,3 +18,6 @@ learn more about react hook in depth and how all the important modules in react 
 
 ### useMemo Hook
 <a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useMemo">useMemo</a> Hook allows you to optimize performance by memoizing a function's results. It helps to avoid re-rendering of a component when the inputs of a certain function have not changed. 
+
+### useRef Hook
+<a href="https://github.com/Barbarpotato/React-Hook-Fundamental/tree/useRef">useRef</a> Hook allows you to access the value of a DOM element or a state value across render cycles. It's commonly used to store a reference to an element in the DOM so that it can be manipulated, or to store a value that persists across render cycles.
